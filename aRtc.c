@@ -8,9 +8,16 @@
 
 #include "aRtc.h"
 
+#ifndef			ARTC_INCREASE_40_YEARS
+#define			ARTC_INCREASE_40_YEARS		1
+#endif
+
 void aRtc_set(RTC_HandleTypeDef *hrtc, struct tm Time){
 	time_t utc;
 
+#if (ARTC_INCREASE_80_YEARS == 1)
+	Time.tm_year -= 80;
+#endif
 	utc = mktime(&Time);
 
 	__HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
@@ -29,5 +36,10 @@ void aRtc_get(RTC_HandleTypeDef *hrtc, struct tm *Time){
 
 	local = localtime(&utc);
 
+#if (ARTC_INCREASE_80_YEARS == 1)
+	Time->tm_year += 80;
+#endif
+
 	*Time = *local;
 }
+
